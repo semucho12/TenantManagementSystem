@@ -4,17 +4,17 @@ plugins {
 
 android {
     namespace = "com.example.tenantmanagementsystem"
-    compileSdk {
-        version = release(37)
-        buildFeatures {
-            viewBinding = true
-        }
+    compileSdk = 37
+
+    buildFeatures {
+        viewBinding = true
+        dataBinding = true
     }
 
     defaultConfig {
         applicationId = "com.example.tenantmanagementsystem"
         minSdk = 24
-        targetSdk = 37
+        targetSdk = 35
         versionCode = 1
         versionName = "1.0"
 

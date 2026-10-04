@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">TenantManagementSystem</string>
+    <string name="tenant_result_format">Tenant: %1$s\nPhone: %2$s\nRent: KSh %3$s</string>
+    <string name="error_enter_name">Please enter tenant name</string>
+    <string name="error_enter_phone">Please enter phone number</string>
+    <string name="error_enter_rent">Please enter rent amount</string>
 </resources>
