@@ -7,9 +7,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
-import com.example.tenantmanagementsystem.data.repository.TenantRepository
 import com.example.tenantmanagementsystem.databinding.FragmentViewTenantsBinding
+import com.example.tenantmanagementsystem.ui.viewmodel.TenantViewModel
 
 class ViewTenantsFragment : Fragment() {
 
@@ -19,6 +20,9 @@ class ViewTenantsFragment : Fragment() {
     // SAFE ARGS: reads the arguments that arrived with the action.
     // ViewTenantsFragmentArgs was generated from the <argument> in nav_graph.xml
     private val args: ViewTenantsFragmentArgs by navArgs()
+
+    // The SHARED ViewModel: every Fragment in MainActivity gets the SAME one
+    private val viewModel: TenantViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +50,7 @@ class ViewTenantsFragment : Fragment() {
             binding.newTenantGroup.visibility = View.GONE
         }
 
+        // UI JOB: open the phone dialer with the new tenant's number
         binding.callButton.setOnClickListener {
             if (newTenant != null) {
                 val intent = Intent(Intent.ACTION_DIAL, Uri.parse("tel:${newTenant.phone}"))
@@ -53,13 +58,9 @@ class ViewTenantsFragment : Fragment() {
             }
         }
 
-        // Show every saved tenant as text, one after another
-        val tenants = TenantRepository.tenants
-
-        if (tenants.isEmpty()) {
-            binding.allTenantsTextView.text = "No tenants yet. Add one from the Dashboard."
-        } else {
-            binding.allTenantsTextView.text = tenants.joinToString("\n\n") { it.summary() }
+        // OBSERVER: runs now, and again every time allTenantsText changes
+        viewModel.allTenantsText.observe(viewLifecycleOwner) { text ->
+            binding.allTenantsTextView.text = text
         }
     }
 
