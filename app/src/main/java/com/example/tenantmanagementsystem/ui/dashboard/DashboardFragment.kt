@@ -6,14 +6,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.example.tenantmanagementsystem.data.repository.TenantRepository
 import com.example.tenantmanagementsystem.databinding.FragmentDashboardBinding
+import com.example.tenantmanagementsystem.ui.viewmodel.TenantViewModel
 
 class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
     private val binding get() = _binding!!
+
+    // The SHARED ViewModel: every Fragment in MainActivity gets the SAME one
+    private val viewModel: TenantViewModel by activityViewModels()
 
     // 1. The Fragment OBJECT is created (no view yet)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,22 +36,23 @@ class DashboardFragment : Fragment() {
         return binding.root
     }
 
-    // 3. The view exists: fill in the metrics and set click listeners
+    // 3. The view exists: connect the ViewModel and set click listeners
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         Log.d("TENANT_LIFECYCLE", "   DashboardFragment: onViewCreated")
 
-        val tenantCount = TenantRepository.tenants.size
-        val totalRent = TenantRepository.totalRent()
+        // DATA BINDING: give the ViewModel to <variable name="viewModel">
+        binding.viewModel = viewModel
+        // Let the layout WATCH LiveData (otherwise the text never updates)
+        binding.lifecycleOwner = viewLifecycleOwner
 
-        binding.tenantCountTextView.text = "Tenants\n$tenantCount"
-        binding.totalRentTextView.text = "Total rent\nKSh %,.0f".format(totalRent)
-
+        // UI JOB: navigate to Add Tenant
         binding.addTenantButton.setOnClickListener {
             val action = DashboardFragmentDirections.actionDashboardFragmentToAddTenantFragment()
             findNavController().navigate(action)
         }
 
+        // UI JOB: navigate to View Tenants
         binding.viewTenantsButton.setOnClickListener {
             val action = DashboardFragmentDirections.actionDashboardFragmentToViewTenantsFragment()
             findNavController().navigate(action)
