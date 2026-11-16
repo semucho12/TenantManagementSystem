@@ -7,7 +7,6 @@ plugins {
 android {
     namespace = "com.example.tenantmanagementsystem"
     compileSdk = 37
-
     buildFeatures {
         viewBinding = true
         dataBinding = true
